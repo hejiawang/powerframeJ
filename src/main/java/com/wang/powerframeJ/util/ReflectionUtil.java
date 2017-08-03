@@ -53,8 +53,9 @@ public final class ReflectionUtil {
 	}
 	
 	/**
-	 * 设置成员变量的值
-	 * @param obj
+	 * 设置成员变量的值<br/>
+	 * 要对obj对象中的field初始化为value
+	 * @param obj 
 	 * @param field
 	 * @param value
 	 */
