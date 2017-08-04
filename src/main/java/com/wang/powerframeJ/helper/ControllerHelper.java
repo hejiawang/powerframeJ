@@ -16,7 +16,7 @@ import com.wang.powerframeJ.util.CollectionUtil;
  * @author HeJiawang
  * @date   2017.08.04
  */
-public class ControllerHelper {
+public final class ControllerHelper {
 	
 	/**
 	 * 用于存放请求与处理器的映射关系(简称 Action Map)

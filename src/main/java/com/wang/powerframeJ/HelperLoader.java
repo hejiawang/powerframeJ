@@ -11,7 +11,7 @@ import com.wang.powerframeJ.util.ClassUtil;
  * @author HeJiawang
  * @date   2017.08.04
  */
-public class HelperLoader {
+public final class HelperLoader {
 
 	public static void init() {
 		Class<?>[] classList = {
