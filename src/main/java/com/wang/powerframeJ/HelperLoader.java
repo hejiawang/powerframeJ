@@ -1,5 +1,6 @@
 package com.wang.powerframeJ;
 
+import com.wang.powerframeJ.helper.AopHelper;
 import com.wang.powerframeJ.helper.BeanHepler;
 import com.wang.powerframeJ.helper.ClassHelper;
 import com.wang.powerframeJ.helper.ControllerHelper;
@@ -17,6 +18,7 @@ public final class HelperLoader {
 		Class<?>[] classList = {
 				ClassHelper.class,
 				BeanHepler.class,
+				AopHelper.class,//AopHelper初始化要放在IocHelper之前，因为首先要通过AopHelper获取代理对象，然后才能通过IocHelper进行依赖注入
 				IocHelper.class,
 				ControllerHelper.class
 		};
