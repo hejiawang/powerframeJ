@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.wang.powerframeJ.annotation.Aspect;
+import com.wang.powerframeJ.annotation.Service;
+import com.wang.powerframeJ.annotation.Transaction;
 import com.wang.powerframeJ.proxy.AspectProxy;
 import com.wang.powerframeJ.proxy.Proxy;
 import com.wang.powerframeJ.proxy.ProxyManager;
@@ -76,6 +78,19 @@ public final class AopHelper {
 	 */
 	private static Map<Class<?>, Set<Class<?>>>  createProxyMap() throws Exception {
 		Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<Class<?>, Set<Class<?>>>();
+		
+		addAspectProxy(proxyMap);
+		addTransactionProxy(proxyMap);
+		
+		return proxyMap;
+	}
+	
+	/**
+	 * 添加普通切面代理
+	 * @param proxyMap
+	 * @throws Exception
+	 */
+	private static void addAspectProxy( Map<Class<?>, Set<Class<?>>> proxyMap ) throws Exception {
 		Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);	//所有实现了AspectProxy的类
 		for( Class<?> proxyClass : proxyClassSet ) {
 			if( proxyClass.isAnnotationPresent(Aspect.class) ) {
@@ -84,8 +99,15 @@ public final class AopHelper {
 				proxyMap.put(proxyClass, targetClassSet);
 			}
 		}
-		
-		return proxyMap;
+	}
+	
+	/**
+	 * 添加事物代理
+	 * @param proxyMap
+	 */
+	private static void addTransactionProxy( Map<Class<?>, Set<Class<?>>> proxyMap ) {
+		Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnotation(Service.class);
+		proxyMap.put(Transaction.class, serviceClassSet);
 	}
 	
 	/**
