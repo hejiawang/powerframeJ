@@ -46,7 +46,7 @@ public final class ControllerHelper {
 							String mapping = action.value();
 							
 							//验证URL规则
-							if( mapping.matches("\\w+:/\\W*") ) {
+							if( mapping.matches("\\w+:/\\w*") ) {	//例：   get:/testUrl
 								
 								String[] array = mapping.split(":");
 								if( ArrayUtil.isNotEmpty(array) && array.length==2 ) {
