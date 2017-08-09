@@ -17,6 +17,7 @@ import com.wang.powerframeJ.annotation.Transaction;
 import com.wang.powerframeJ.proxy.AspectProxy;
 import com.wang.powerframeJ.proxy.Proxy;
 import com.wang.powerframeJ.proxy.ProxyManager;
+import com.wang.powerframeJ.proxy.TransactionProxy;
 
 /**
  * 方法拦截助手类
@@ -107,7 +108,7 @@ public final class AopHelper {
 	 */
 	private static void addTransactionProxy( Map<Class<?>, Set<Class<?>>> proxyMap ) {
 		Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnotation(Service.class);
-		proxyMap.put(Transaction.class, serviceClassSet);
+		proxyMap.put(TransactionProxy.class, serviceClassSet);
 	}
 	
 	/**
