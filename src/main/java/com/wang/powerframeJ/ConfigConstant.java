@@ -17,4 +17,6 @@ public interface ConfigConstant {
 	String APP_BASE_PACKAGE = "powerFrameJ.app.base_package";
 	String APP_JSP_PATH = "powerFrameJ.app.jsp_path";
 	String APP_ASSET_PATH = "powerFrameJ.app.asset_path";
+	
+	String APP_UPLOAD_LIMIT = "powerFrameJ.app.upload_limit";
 }
