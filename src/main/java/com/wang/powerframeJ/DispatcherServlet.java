@@ -3,8 +3,6 @@ package com.wang.powerframeJ;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -24,6 +22,7 @@ import com.wang.powerframeJ.helper.BeanHepler;
 import com.wang.powerframeJ.helper.ConfigHelper;
 import com.wang.powerframeJ.helper.ControllerHelper;
 import com.wang.powerframeJ.helper.RequestHelper;
+import com.wang.powerframeJ.helper.ServletHelper;
 import com.wang.powerframeJ.helper.UploadHelper;
 import com.wang.powerframeJ.util.ArrayUtil;
 import com.wang.powerframeJ.util.CodecUtil;
@@ -59,46 +58,52 @@ public class DispatcherServlet extends HttpServlet {
 	
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//获取请求方法与请求路径
-		String requestMehtod = request.getMethod().toLowerCase();
-		String requestPath = request.getPathInfo();
+		ServletHelper.init(request, response);
+		try {
+			//获取请求方法与请求路径
+			String requestMehtod = request.getMethod().toLowerCase();
+			String requestPath = request.getPathInfo();
+			
+			if( requestPath.equals("/favicon.ico") ) {
+				return ;
+			}
+			
+			//获取 Action 处理器
+			Handler handler = ControllerHelper.getHandler(requestMehtod, requestPath);
+			if( handler != null ) {
+				
+				//获取 Controller 类及其 Bean 实例
+				Class<?> controllerClass = handler.getControllerClass();
+				Object controllerBean = BeanHepler.getBean(controllerClass);
+				
+				//创建请求参数对象
+				Param param;
+				if( UploadHelper.isMultipart(request) ) {
+					param = UploadHelper.createParam(request);
+				} else {
+					param = RequestHelper.createParam(request);
+				}
+				
+				//调用 Action 方法
+				Method actionMethod = handler.getActionMethod();
+				
+				Object result ;
+				if( param.isEmpty() ) {
+					result = ReflectionUtil.invokeMethod(controllerBean, actionMethod);
+				} else {
+					result = ReflectionUtil.invokeMethod(controllerBean, actionMethod, param);
+				}
+				
+				//处理 Action 方法返回值
+				if( result instanceof View ) {
+					handleViewResult( (View)result, request, response );
+				} else if( result instanceof Data ) {
+					handleDataResult( (Data) result, response );
+				}
+			}
 		
-		if( requestPath.equals("/favicon.ico") ) {
-			return ;
-		}
-		
-		//获取 Action 处理器
-		Handler handler = ControllerHelper.getHandler(requestMehtod, requestPath);
-		if( handler != null ) {
-			
-			//获取 Controller 类及其 Bean 实例
-			Class<?> controllerClass = handler.getControllerClass();
-			Object controllerBean = BeanHepler.getBean(controllerClass);
-			
-			//创建请求参数对象
-			Param param;
-			if( UploadHelper.isMultipart(request) ) {
-				param = UploadHelper.createParam(request);
-			} else {
-				param = RequestHelper.createParam(request);
-			}
-			
-			//调用 Action 方法
-			Method actionMethod = handler.getActionMethod();
-			
-			Object result ;
-			if( param.isEmpty() ) {
-				result = ReflectionUtil.invokeMethod(controllerBean, actionMethod);
-			} else {
-				result = ReflectionUtil.invokeMethod(controllerBean, actionMethod, param);
-			}
-			
-			//处理 Action 方法返回值
-			if( result instanceof View ) {
-				handleViewResult( (View)result, request, response );
-			} else if( result instanceof Data ) {
-				handleDataResult( (Data) result, response );
-			}
+		} finally {
+			ServletHelper.destroy();
 		}
 	}
 

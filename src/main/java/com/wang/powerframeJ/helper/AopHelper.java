@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.wang.powerframeJ.annotation.Aspect;
 import com.wang.powerframeJ.annotation.Service;
-import com.wang.powerframeJ.annotation.Transaction;
 import com.wang.powerframeJ.proxy.AspectProxy;
 import com.wang.powerframeJ.proxy.Proxy;
 import com.wang.powerframeJ.proxy.ProxyManager;
